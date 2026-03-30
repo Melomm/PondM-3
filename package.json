@@ -1,0 +1,41 @@
+{
+  "name": "industrial-telemetry-backend",
+  "version": "1.0.0",
+  "description": "Backend assíncrono para ingestão de telemetria industrial com RabbitMQ e PostgreSQL.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev:api": "tsx watch src/index.ts",
+    "dev:worker": "tsx watch src/worker.ts",
+    "start:api": "node dist/index.js",
+    "start:worker": "node dist/worker.js",
+    "migrate": "tsx src/migrate.ts",
+    "test:load": "k6 run tests/k6/telemetry-load.js"
+  },
+  "keywords": [
+    "typescript",
+    "rabbitmq",
+    "postgresql",
+    "telemetry",
+    "k6"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "amqplib": "^0.10.7",
+    "dotenv": "^16.6.1",
+    "fastify": "^5.6.1",
+    "pg": "^8.16.3",
+    "zod": "^4.1.11"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.10.8",
+    "@types/node": "^24.5.2",
+    "@types/pg": "^8.15.5",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,14 @@
+Pico W telemetry firmware starting
+device_id=pico-w-01 backend=192.168.0.10:3000/telemetry
+analog_gpio=26 digital_gpio=15 sample_period_ms=1000
+[wifi] state=connecting attempts=0
+[wifi] state=connected attempts=0
+[sample] ms=6123 adc_raw=1860 adc_v=1.499 level=45.42% presence=absent queue=2 push_a=1 push_d=1
+[http] ok status=202 sensor=tank_level attempt=0 remaining=1
+[http] ok status=202 sensor=presence attempt=0 remaining=0
+[irq] ms=7021 presence=present queue=1 push=1
+[http] fail status=0 sensor=presence retry=1 attempts=1 queued=1
+[wifi] state=backoff attempts=1
+[wifi] state=connecting attempts=1
+[wifi] state=connected attempts=0
+[http] ok status=202 sensor=presence attempt=1 remaining=0

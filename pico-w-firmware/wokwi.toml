@@ -1,0 +1,5 @@
+[wokwi]
+version = 1
+firmware = "build/pico_w_telemetry.uf2"
+elf = "build/pico_w_telemetry.elf"
+gdbServerPort = 3333

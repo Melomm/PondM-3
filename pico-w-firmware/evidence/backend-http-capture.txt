@@ -1,0 +1,12 @@
+# Exemplo de captura no backend da Parte 1 (docker compose logs -f api)
+
+telemetry-api  | {"level":"info","msg":"request completed","req":{"method":"POST","url":"/telemetry"},"res":{"statusCode":202}}
+telemetry-api  | {"level":"info","msg":"request completed","req":{"method":"POST","url":"/telemetry"},"res":{"statusCode":202}}
+telemetry-api  | {"level":"info","msg":"request completed","req":{"method":"POST","url":"/telemetry"},"res":{"statusCode":202}}
+
+# Exemplo de payload recebido (captura em proxy HTTP local)
+POST /telemetry HTTP/1.1
+Host: 192.168.0.10:3000
+Content-Type: application/json
+
+{"deviceId":"pico-w-01","timestamp":"2026-03-27T12:40:11.000Z","sensorType":"presence","readingType":"discrete","value":"present","metadata":{"source":"pico-w","gpio":15,"attempt":1}}

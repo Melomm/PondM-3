@@ -1,0 +1,86 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: telemetry-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: telemetry
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d telemetry"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5432:5432"
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: telemetry-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: telemetry-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    command: ["node", "dist/index.js"]
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: telemetry-worker
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    command: ["node", "dist/worker.js"]
+
+  k6:
+    image: grafana/k6:0.57.0
+    profiles:
+      - loadtest
+    working_dir: /scripts
+    volumes:
+      - ./:/scripts
+    environment:
+      BASE_URL: http://api:3000
+      K6_SUMMARY_PATH: reports/k6/run-2026-03-19-summary.json
+    depends_on:
+      api:
+        condition: service_started
+    command: ["run", "tests/k6/telemetry-load.js"]
+
+volumes:
+  postgres_data:
+  rabbitmq_data:
